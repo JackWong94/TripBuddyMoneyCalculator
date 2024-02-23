@@ -24,7 +24,7 @@ class CalculatingAlgorithm {
         )
 
         private var items = listOf(
-            ItemManager.addItemWithUnequalOwingAmount(
+            ItemManager.AddOwingItem(
                 "oyster",
                 20.0,
                 people.find { it.name.equals("Jack", ignoreCase = true) }!!,
@@ -39,7 +39,37 @@ class CalculatingAlgorithm {
                     people.find { it.name.equals("Mei", ignoreCase = true) }!!,
                 ),
                 listOf(5.0, 2.5, 5.0, 0.0, 2.5, 2.5, 2.5, 0.0)
-            )
+            ),
+            ItemManager.AddOwingItem(
+                "car Daniel",
+                75.2,
+                people.find { it.name.equals("Daniel", ignoreCase = true) }!!,
+                listOf (
+                    people.find { it.name.equals("Jack", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Moon", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Daniel", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Wang En", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Kan", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Hui", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Anna", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Mei", ignoreCase = true) }!!,
+                ),
+            ),
+            ItemManager.AddOwingItem(
+                "car Kan",
+                75.2,
+                people.find { it.name.equals("Kan", ignoreCase = true) }!!,
+                listOf (
+                    people.find { it.name.equals("Jack", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Moon", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Daniel", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Wang En", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Kan", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Hui", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Anna", ignoreCase = true) }!!,
+                    people.find { it.name.equals("Mei", ignoreCase = true) }!!,
+                ),
+            ),
         )
         fun result(): String {
             val itemOweDetails = items.map { item ->
@@ -47,9 +77,14 @@ class CalculatingAlgorithm {
                     .joinToString(separator = "\n") { (person, amount) ->
                     "${person.name} owes $amount"
                 }
-                "${item.name}:\n$owedDetails"
+                "${item.name}: PAID BY ${item.paidBy.name}\n$owedDetails"
             }
-            Log.d("JACK", itemOweDetails.joinToString())
+            Log.d("JACK", itemOweDetails.joinToString("\n"))
+            Log.d("JACK", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
+            val personOweTotal = people.map {person ->
+                "${person.name} total owing = ${person.owedTotal}"
+            }
+            Log.d("JACK", personOweTotal.joinToString("\n"))
             return "Hello"
         }
     }
