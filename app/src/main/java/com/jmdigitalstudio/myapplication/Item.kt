@@ -1,5 +1,7 @@
 package com.jmdigitalstudio.myapplication
 
+import android.util.Log
+
 data class Item (
     val name: String,
     val price: Double,
@@ -9,16 +11,23 @@ data class Item (
 )
 
 object ItemManager {
-    fun AddOwingItem(
+
+    var items = mutableListOf<Item>()
+    fun addOwingItem(
         name: String,
         price: Double,
         paidBy: Person,
         owedBy: List<Person>,
         owedAmount: List<Double> = List(owedBy.size) { price / owedBy.size }
-    ): Item {
-        val item = Item(name, price, paidBy, owedBy, owedAmount)
-        setOweAmountToPerson(owedBy, owedAmount)
-        return item
+    ): Boolean {
+        if (items.any {it.name.equals(name)}) {
+            Log.d("JACK","ITEM ALREADY EXIST")
+            return false
+        } else {
+            items.add(Item(name, price, paidBy, owedBy, owedAmount))
+            setOweAmountToPerson(owedBy, owedAmount)
+            return true
+        }
     }
 
     fun setOweAmountToPerson(owedBy: List<Person>, owedAmount: List<Double>) {
