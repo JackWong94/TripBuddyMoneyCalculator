@@ -2,12 +2,15 @@ package com.jmdigitalstudio.myapplication
 
 import android.util.Log
 
-data class Person (
+data class Person(
     val name: String,
     var paidTotal: Double,
     var owedTotal: Double,
-    var owedAndPaidDifference: Double
-)
+    var owedAndPaidDifferenceForCalculationPurpose: Double = 0.0,
+) {
+    val owedAndPaidDifference: Double
+        get() = paidTotal - owedTotal
+}
 
 object PersonManager {
     var people = mutableListOf<Person>()
@@ -16,13 +19,12 @@ object PersonManager {
         name: String,
         paidTotal: Double = 0.0,
         owedTotal: Double = 0.0,
-        owedAndPaidDifference: Double = 0.0
     ): Boolean {
         if (ItemManager.items.any {it.name.equals(name)}) {
             Log.d("JACK","PERSON ALREADY EXIST")
             return false
         } else {
-            people.add(Person(name, paidTotal, owedTotal, owedAndPaidDifference))
+            people.add(Person(name, paidTotal, owedTotal))
             return true
         }
     }

@@ -2,7 +2,7 @@ package com.jmdigitalstudio.myapplication
 
 import android.util.Log
 
-object CalculatingAlgorithm {
+object CalculatingManager {
     /*
     Code plan: create a list of items following the spreadsheet
     1. List all person that has -ve and +ve owed and paid difference
@@ -12,7 +12,7 @@ object CalculatingAlgorithm {
     5. Repeat the steps
      */
 
-    fun result(): String {
+    fun calculationSetup() {
         PersonManager.addPerson("Jack")
         PersonManager.addPerson("Moon")
         PersonManager.addPerson("Daniel")
@@ -74,6 +74,8 @@ object CalculatingAlgorithm {
                 PersonManager.getPersonByName("Mei")
             )
         )
+    }
+    fun summary(): String {
         val itemOweDetails = ItemManager.items.map { item ->
             val owedDetails = item.owedBy.zip(item.owedAmount)
                 .joinToString(separator = "\n") { (person, amount) ->
@@ -84,9 +86,43 @@ object CalculatingAlgorithm {
         Log.d("JACK", itemOweDetails.joinToString("\n"))
         Log.d("JACK", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
         val personOweTotal = PersonManager.people.map {person ->
-            "${person.name} total owing = ${person.owedTotal}"
+            "${person.name} \t total paid = ${person.paidTotal} \t total owing = ${person.owedTotal} \t paidOweDiff = ${person.owedAndPaidDifference}"
         }
         Log.d("JACK", personOweTotal.joinToString("\n"))
-        return itemOweDetails.joinToString(separator = "\n") + personOweTotal.joinToString(separator = "\n")
+        Log.d("JACK", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
+        return itemOweDetails.joinToString(separator = "\n") + "\n"+ personOweTotal.joinToString(separator = "\n")
+    }
+    fun findPayoffSolution() {
+        val mostOweToMostPaidOrder = PersonManager.people.sortedBy {it.owedAndPaidDifference }
+            .joinToString("\n") { "${it.name} ${it.owedAndPaidDifference}" }
+        Log.d("JACK", mostOweToMostPaidOrder)
+        val payStatus = PersonManager.people
+            .groupBy {it.owedAndPaidDifference > 0 }
+            .map { (toBePaids, people) ->
+                people.joinToString("\n") {
+                    "${toBePaids} ${it.name} ${it.owedAndPaidDifference}"
+                }
+            }
+            .joinToString("\n")
+
+        Log.d("JACK", payStatus)
+        var toBePaid = PersonManager.people.filter { it.owedAndPaidDifference > 0 }
+        toBePaid.forEach { it.owedAndPaidDifferenceForCalculationPurpose = it.owedAndPaidDifference }
+        var toPay = PersonManager.people.filter { it.owedAndPaidDifference < 0 }
+        toPay.forEach { it.owedAndPaidDifferenceForCalculationPurpose = it.owedAndPaidDifference }
+        var payee: Person
+        var receipient: Person
+        while (toBePaid.isNotEmpty()) {
+            receipient = toBePaid.get(0)
+            while (receipient.owedAndPaidDifferenceForCalculationPurpose > 0 && toPay.isNotEmpty()) {
+                payee = toPay.get(0)
+                var tempPayeeOwePaidDiff = payee.owedAndPaidDifferenceForCalculationPurpose
+                receipient.owedAndPaidDifferenceForCalculationPurpose += tempPayeeOwePaidDiff
+                payee.owedAndPaidDifferenceForCalculationPurpose = 0.0
+                Log.d("JACK","PAYMENT " + payee.name + " Pay " + tempPayeeOwePaidDiff + " --- > " + receipient.name )
+                toPay = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose < 0 }
+            }
+            toBePaid = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose > 0 }
+        }
     }
 }

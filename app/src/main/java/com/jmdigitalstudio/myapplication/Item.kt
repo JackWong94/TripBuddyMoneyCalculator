@@ -25,6 +25,7 @@ object ItemManager {
             return false
         } else {
             items.add(Item(name, price, paidBy, owedBy, owedAmount))
+            setPaidAmountToPerson(paidBy, price)
             setOweAmountToPerson(owedBy, owedAmount)
             return true
         }
@@ -36,5 +37,9 @@ object ItemManager {
         owedBy.zip(owedAmount).forEach() {(owedBy, amount) ->
             owedBy.owedTotal += amount
         }
+    }
+
+    fun setPaidAmountToPerson(paidBy: Person, amount: Double) {
+        paidBy.paidTotal += amount
     }
 }
