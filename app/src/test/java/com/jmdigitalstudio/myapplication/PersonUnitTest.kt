@@ -14,8 +14,9 @@ class PersonUnitTest {
     //Person Class Unit Test
     @Test
     fun `addPerson should add a new person`() {
+        TestUtils.logTestCaseTitle()
         // Arrange
-        val name = "Jack"
+        val name = "TestPerson1"
 
         // Act
         PersonManager.addPerson(name)
@@ -27,8 +28,9 @@ class PersonUnitTest {
 
     @Test
     fun `getPersonByName should return the correct person`() {
+        TestUtils.logTestCaseTitle()
         // Arrange
-        val name = "Jack"
+        val name = "TestPerson2"
         val person = Person(name, 0.0, 0.0)
         PersonManager.people.add(person)
 
