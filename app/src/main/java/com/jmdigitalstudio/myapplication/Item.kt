@@ -42,4 +42,5 @@ object ItemManager {
     fun setPaidAmountToPerson(paidBy: Person, amount: Double) {
         paidBy.paidTotal += amount
     }
+
 }

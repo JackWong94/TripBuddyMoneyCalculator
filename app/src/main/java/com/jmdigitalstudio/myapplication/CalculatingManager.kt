@@ -1,6 +1,7 @@
 package com.jmdigitalstudio.myapplication
 
 import android.util.Log
+import com.jmdigitalstudio.myapplication.Utils.roundTo2Decimal
 
 object CalculatingManager {
     /*
@@ -119,10 +120,10 @@ object CalculatingManager {
                 var tempPayeeOwePaidDiff = payee.owedAndPaidDifferenceForCalculationPurpose
                 receipient.owedAndPaidDifferenceForCalculationPurpose += tempPayeeOwePaidDiff
                 payee.owedAndPaidDifferenceForCalculationPurpose = 0.0
-                Log.d("JACK","PAYMENT " + payee.name + " Pay " + tempPayeeOwePaidDiff + " --- > " + receipient.name )
-                toPay = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose < 0 }
+                Log.d("JACK","PAYMENT " + payee.name + " Pay " + (-tempPayeeOwePaidDiff).roundTo2Decimal() + " --- > " + receipient.name )
+                toPay = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose.roundTo2Decimal() < 0.0 }
             }
-            toBePaid = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose > 0 }
+            toBePaid = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose.roundTo2Decimal() > 0.0 }
         }
     }
 }
