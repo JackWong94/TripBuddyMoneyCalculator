@@ -94,20 +94,11 @@ object CalculatingManager {
         return itemOweDetails.joinToString(separator = "\n") + "\n"+ personOweTotal.joinToString(separator = "\n")
     }
     fun findPayoffSolution() {
-        val mostOweToMostPaidOrder = PersonManager.people.sortedBy {it.owedAndPaidDifference }
-            .joinToString("\n") { "${it.name} ${it.owedAndPaidDifference}" }
-        Log.d("JACK", mostOweToMostPaidOrder)
-        val payStatus = PersonManager.people
-            .groupBy {it.owedAndPaidDifference > 0 }
-            .map { (toBePaids, people) ->
-                people.joinToString("\n") {
-                    "${toBePaids} ${it.name} ${it.owedAndPaidDifference}"
-                }
-            }
-            .joinToString("\n")
-
-        Log.d("JACK", payStatus)
         var toBePaid = PersonManager.people.filter { it.owedAndPaidDifference > 0 }
+        /*
+        Due to owedAndPaidDifference value is bind to totalPaid and totalOwe,
+        thus we need to copy the value to another variable for calculation purposes
+         */
         toBePaid.forEach { it.owedAndPaidDifferenceForCalculationPurpose = it.owedAndPaidDifference }
         var toPay = PersonManager.people.filter { it.owedAndPaidDifference < 0 }
         toPay.forEach { it.owedAndPaidDifferenceForCalculationPurpose = it.owedAndPaidDifference }
