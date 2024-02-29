@@ -3,15 +3,21 @@ package com.jmdigitalstudio.myapplication
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.AlertDialogDefaults.shape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +26,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.jmdigitalstudio.myapplication.ui.theme.TripBuddyMoneyCalculatorTheme
 
 class MainActivity : ComponentActivity() {
@@ -44,8 +56,12 @@ class MainActivity : ComponentActivity() {
 }
 @Composable
 fun ItemDetailsList(itemList: List<Item>) {
-    Column {
-        LazyColumn {
+    Column (
+        modifier = Modifier.padding(dimensionResource(id = R.dimen.padding_small)), // Add padding to the whole Column
+    ){
+        LazyColumn (
+            verticalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+        ){
             items(itemList) {
                 ItemDetailsCard(item = it)
             }
@@ -54,7 +70,7 @@ fun ItemDetailsList(itemList: List<Item>) {
             onClick = { /*TODO*/ },
             shape = MaterialTheme.shapes.medium
         ) {
-            Text(text = "+")
+            CustomText(text = "+")
         }
     }
 }
@@ -67,34 +83,40 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
     ) {
         Row {
             Box(
-                modifier = Modifier.weight(0.1f)
+                modifier = Modifier
+                    .weight(0.2f)
+                    .padding(dimensionResource(R.dimen.padding_small))
             ) {
-                Text(text = item.name)
+                CustomText(text = item.name)
             }
             Box (
-                modifier = Modifier.weight(0.2f)
+                modifier = Modifier
+                    .weight(0.2f)
+                    .padding(dimensionResource(R.dimen.padding_small))
             ) {
                 Column {
-                    Text(text = "Price :" + item.price)
-                    Text(text = "Paid by : " + item.paidBy.name)
+                    CustomText(text = "Price :\n" + item.price)
+                    CustomText(text = "Paid by:\n" + item.paidBy.name)
                 }
             }
             Box (
-                modifier = Modifier.weight(1f)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(dimensionResource(R.dimen.padding_small))
             ) {
                 Column {
-                    Text(text = "Owed by: ")
+                    Row (Modifier.padding(dimensionResource(R.dimen.padding_small))){
+                        CustomText(text = "Owed by: ")
+                        Button(
+                            onClick = { /*TODO*/ },
+                            shape = MaterialTheme.shapes.extraLarge,
+                            modifier = Modifier
+                                .size(15.dp)
+                        ) {
+                            CustomText(text = "+", fontSize = 10.sp)
+                        }
+                    }
                     HorizontalSrollingView(item = item)
-                }
-            }
-            Box (
-                modifier = Modifier.weight(0.1f)
-            ) {
-                Button(
-                    onClick = { /*TODO*/ },
-                    shape = MaterialTheme.shapes.medium
-                ) {
-                    Text(text = "+")
                 }
             }
         }
@@ -103,16 +125,21 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
 
 @Composable
 fun HorizontalSrollingView(item: Item) {
-    LazyRow {
+    LazyRow (
+        modifier = Modifier
+            .background(Color.White, shape = RoundedCornerShape(16.dp))
+            .padding(dimensionResource(R.dimen.padding_small)),
+        horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
+    ) {
         val oweByList = item.owedBy.zip(item.owedAmount) { person, amount ->
             "${person.name} ${amount}"
         }
         items(oweByList) { oweBy ->
             Button(
                 onClick = { /*TODO*/ },
-                shape = MaterialTheme.shapes.medium
+                shape = MaterialTheme.shapes.medium,
             ) {
-                Text(text = oweBy)
+                CustomText(text = oweBy)
             }
         }
     }
@@ -120,9 +147,8 @@ fun HorizontalSrollingView(item: Item) {
 
 @Composable
 fun Greeting(content: String, modifier: Modifier = Modifier) {
-    Text(
+    CustomText(
         text = "Welcome To Trip Buddy Money Calculator\n $content",
-        modifier = modifier
     )
 }
 
@@ -146,7 +172,24 @@ fun GreetingPreview() {
             ItemDetailsCard(item = itemData)
         } else {
             // Handle the case when there are no items
-            Text(text = "No items available")
+            CustomText(text = "No items available")
         }
     }
+}
+
+@Composable
+fun CustomText(
+    text: String,
+    fontSize: TextUnit = 10.sp,
+    color: Color = Color.Black,
+    fontWeight: FontWeight? = null
+) {
+    Text(
+        text = text,
+        fontSize = fontSize,
+        color = color,
+        fontWeight = fontWeight,
+        lineHeight = 12.sp
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
 }
