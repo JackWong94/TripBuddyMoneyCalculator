@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.AlertDialogDefaults.shape
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
@@ -49,7 +50,10 @@ fun ItemDetailsList(itemList: List<Item>) {
                 ItemDetailsCard(item = it)
             }
         }
-        Button(onClick = { /*TODO*/ }) {
+        Button(
+            onClick = { /*TODO*/ },
+            shape = MaterialTheme.shapes.medium
+        ) {
             Text(text = "+")
         }
     }
@@ -86,7 +90,10 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
             Box (
                 modifier = Modifier.weight(0.1f)
             ) {
-                Button(onClick = { /*TODO*/ }) {
+                Button(
+                    onClick = { /*TODO*/ },
+                    shape = MaterialTheme.shapes.medium
+                ) {
                     Text(text = "+")
                 }
             }
@@ -101,7 +108,10 @@ fun HorizontalSrollingView(item: Item) {
             "${person.name} ${amount}"
         }
         items(oweByList) { oweBy ->
-            Button(onClick = { /*TODO*/ }) {
+            Button(
+                onClick = { /*TODO*/ },
+                shape = MaterialTheme.shapes.medium
+            ) {
                 Text(text = oweBy)
             }
         }
