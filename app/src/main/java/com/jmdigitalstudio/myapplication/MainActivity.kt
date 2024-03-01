@@ -18,8 +18,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -66,11 +72,10 @@ fun ItemDetailsList(itemList: List<Item>) {
                 ItemDetailsCard(item = it)
             }
         }
-        Button(
+        FloatingActionButton(
             onClick = { /*TODO*/ },
-            shape = MaterialTheme.shapes.medium
         ) {
-            CustomText(text = "+")
+            Icon(Icons.Filled.Add, null )
         }
     }
 }
@@ -79,7 +84,10 @@ fun ItemDetailsList(itemList: List<Item>) {
 fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
     Card (
         modifier = modifier
-            .fillMaxWidth()
+            .fillMaxWidth(),
+        elevation =  CardDefaults.cardElevation(
+            defaultElevation = 2.dp
+        )
     ) {
         Row {
             Box(
@@ -107,13 +115,12 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
                 Column {
                     Row (Modifier.padding(dimensionResource(R.dimen.padding_small))){
                         CustomText(text = "Owed by: ")
-                        Button(
+                        FloatingActionButton(
                             onClick = { /*TODO*/ },
-                            shape = MaterialTheme.shapes.extraLarge,
                             modifier = Modifier
                                 .size(15.dp)
                         ) {
-                            CustomText(text = "+", fontSize = 10.sp)
+                            Icon(Icons.Filled.Add, null )
                         }
                     }
                     HorizontalSrollingView(item = item)
@@ -138,6 +145,10 @@ fun HorizontalSrollingView(item: Item) {
             Button(
                 onClick = { /*TODO*/ },
                 shape = MaterialTheme.shapes.medium,
+                elevation = ButtonDefaults.elevatedButtonElevation(
+                    defaultElevation = 5.dp,
+                    pressedElevation = 8.dp
+                )
             ) {
                 CustomText(text = oweBy)
             }
