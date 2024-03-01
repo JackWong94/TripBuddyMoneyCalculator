@@ -265,7 +265,7 @@ fun CustomText(
     fontStyle: FontStyle? = null,
     underline: Boolean = false, // Added underline parameter
     textAlign: TextAlign? = null,
-    onClick: () -> Unit = {},
+    onClick: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val textDecoration = if (underline) TextDecoration.Underline else TextDecoration.None
@@ -280,7 +280,7 @@ fun CustomText(
         fontStyle = fontStyle,
         textDecoration = textDecoration,
         textAlign = textAlign,
-        modifier = Modifier.clickable { onClick() }
+        modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
 }
