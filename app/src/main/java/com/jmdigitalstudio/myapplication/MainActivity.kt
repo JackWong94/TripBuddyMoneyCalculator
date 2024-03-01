@@ -70,10 +70,18 @@ private fun TripBuddyMoneyCalculatorApp() {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        TitleDisplay()
-        CurrentTripTitle()
-        ItemDetailsList(ItemManager.items)
-        ReadyToCalculateButton()
+        Box(modifier = Modifier.weight(0.5f)) {
+            TitleDisplay()
+        }
+        Box(modifier = Modifier.weight(1f)) {
+            CurrentTripTitle()
+        }
+        Box(modifier = Modifier.weight(5f)) {
+            ItemDetailsList(ItemManager.items)
+        }
+        Box(modifier = Modifier.weight(1f)) {
+            ReadyToCalculateButton()
+        }
     }
 }
 @Composable
@@ -93,7 +101,7 @@ fun ReadyToCalculateButton() {
 fun ItemDetailsList(itemList: List<Item>) {
     Column (
         modifier = Modifier, // Add padding to the whole Column
-        verticalArrangement = Arrangement.Center,
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
         LazyColumn (
@@ -114,13 +122,16 @@ fun ItemDetailsList(itemList: List<Item>) {
 }
 @Composable
 fun CurrentTripTitle() {
-    CustomText(
-        text = "Current Trip: Waipu Trip",
-        fontSize = 20.sp,
-        fontWeight = FontWeight.Bold
-    )
-    CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue)
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+    Column (
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ){
+        CustomText(
+            text = "Current Trip: Waipu Trip",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue)
+    }
 }
 @Composable
 fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
