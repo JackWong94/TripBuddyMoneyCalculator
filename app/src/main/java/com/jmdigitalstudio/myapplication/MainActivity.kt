@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -147,7 +148,7 @@ fun CurrentTripTitle() {
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold
         )
-        CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue)
+        CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue, onClick = { /*TO DO*/})
     }
 }
 @Composable
@@ -264,6 +265,7 @@ fun CustomText(
     fontStyle: FontStyle? = null,
     underline: Boolean = false, // Added underline parameter
     textAlign: TextAlign? = null,
+    onClick: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     val textDecoration = if (underline) TextDecoration.Underline else TextDecoration.None
@@ -277,7 +279,8 @@ fun CustomText(
         lineHeight = 12.sp,
         fontStyle = fontStyle,
         textDecoration = textDecoration,
-        textAlign = textAlign
+        textAlign = textAlign,
+        modifier = Modifier.clickable { onClick() }
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
 }
