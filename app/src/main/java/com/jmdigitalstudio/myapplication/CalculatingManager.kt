@@ -93,7 +93,7 @@ object CalculatingManager {
         Log.d("JACK", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
         return itemOweDetails.joinToString(separator = "\n") + "\n"+ personOweTotal.joinToString(separator = "\n")
     }
-    fun findPayoffSolution() {
+    fun findPayoffSolution(): String {
         var toBePaid = PersonManager.people.filter { it.owedAndPaidDifference > 0 }
         /*
         Due to owedAndPaidDifference value is bind to totalPaid and totalOwe,
@@ -104,6 +104,7 @@ object CalculatingManager {
         toPay.forEach { it.owedAndPaidDifferenceForCalculationPurpose = it.owedAndPaidDifference }
         var payee: Person
         var receipient: Person
+        var paymentToBeMade: String = ""
         while (toBePaid.isNotEmpty()) {
             receipient = toBePaid.get(0)
             while (receipient.owedAndPaidDifferenceForCalculationPurpose > 0 && toPay.isNotEmpty()) {
@@ -112,9 +113,11 @@ object CalculatingManager {
                 receipient.owedAndPaidDifferenceForCalculationPurpose += tempPayeeOwePaidDiff
                 payee.owedAndPaidDifferenceForCalculationPurpose = 0.0
                 Log.d("JACK","PAYMENT " + payee.name + " Pay " + (-tempPayeeOwePaidDiff).roundTo2Decimal() + " --- > " + receipient.name )
+                paymentToBeMade = paymentToBeMade + "PAYMENT ${payee.name} Pay ${(-tempPayeeOwePaidDiff).roundTo2Decimal()} --- > ${receipient.name}\n"
                 toPay = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose.roundTo2Decimal() < 0.0 }
             }
             toBePaid = PersonManager.people.filter { it.owedAndPaidDifferenceForCalculationPurpose.roundTo2Decimal() > 0.0 }
         }
+        return paymentToBeMade
     }
 }
