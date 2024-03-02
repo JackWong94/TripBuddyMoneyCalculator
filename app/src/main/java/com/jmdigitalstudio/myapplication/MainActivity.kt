@@ -29,6 +29,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -215,13 +216,9 @@ fun HorizontalSrollingView(item: Item) {
             "${person.name} ${amount}"
         }
         items(oweByList) { oweBy ->
-            Button(
+            FilledTonalButton (
                 onClick = { /*TODO*/ },
                 shape = MaterialTheme.shapes.medium,
-                elevation = ButtonDefaults.elevatedButtonElevation(
-                    defaultElevation = 5.dp,
-                    pressedElevation = 8.dp
-                )
             ) {
                 CustomText(text = oweBy)
             }
