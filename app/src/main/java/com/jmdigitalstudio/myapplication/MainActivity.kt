@@ -26,7 +26,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.FilledTonalButton
@@ -159,7 +158,8 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
             .fillMaxWidth(),
         elevation =  CardDefaults.cardElevation(
             defaultElevation = 2.dp
-        )
+        ),
+        shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 30.dp, topEnd = 30.dp, bottomEnd = 10.dp)
     ) {
         Row {
             Box(
