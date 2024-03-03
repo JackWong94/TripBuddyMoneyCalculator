@@ -67,8 +67,6 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     CalculatingManager.calculationSetup()
-                    //CalculatingManager.summary()
-                    //CalculatingManager.findPayoffSolution()
                     TripBuddyMoneyCalculatorApp()
                 }
             }
@@ -98,21 +96,23 @@ private fun TripBuddyMoneyCalculatorApp() {
     }
 }
 @Composable
-fun ReadyToCalculateButton() {
-    var showDialog by remember { mutableStateOf(false) }
-    Column(
-        verticalArrangement = Arrangement.Bottom,
+fun TitleDisplay(modifier: Modifier = Modifier) {
+    CustomText(
+        text = "Welcome To Trip Buddy Money Calculator"
+    )
+    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+}
+@Composable
+fun CurrentTripTitle() {
+    Column (
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier.fillMaxWidth()
-    ) {
-        Button(
-            onClick = { showDialog = true },
-        ) {
-            Text(text = "END OF TRIP --> CLICK TO CALCULATE !")
-        }
-        if (showDialog) {
-            CalculationResultDialog(onDismiss = { showDialog = false })
-        }
+    ){
+        CustomText(
+            text = "Current Trip: Waipu Trip",
+            fontSize = 20.sp,
+            fontWeight = FontWeight.Bold
+        )
+        CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue, onClick = { /*TO DO*/})
     }
 }
 @Composable
@@ -136,19 +136,6 @@ fun ItemDetailsList(itemList: List<Item>) {
         ) {
             Icon(Icons.Filled.Add, null )
         }
-    }
-}
-@Composable
-fun CurrentTripTitle() {
-    Column (
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ){
-        CustomText(
-            text = "Current Trip: Waipu Trip",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
-        )
-        CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue, onClick = { /*TO DO*/})
     }
 }
 @Composable
@@ -202,7 +189,6 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
         }
     }
 }
-
 @Composable
 fun HorizontalSrollingView(item: Item) {
     LazyRow (
@@ -225,15 +211,54 @@ fun HorizontalSrollingView(item: Item) {
         }
     }
 }
-
 @Composable
-fun TitleDisplay(modifier: Modifier = Modifier) {
-    CustomText(
-        text = "Welcome To Trip Buddy Money Calculator"
-    )
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+fun ReadyToCalculateButton() {
+    var showDialog by remember { mutableStateOf(false) }
+    Column(
+        verticalArrangement = Arrangement.Bottom,
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Button(
+            onClick = { showDialog = true },
+        ) {
+            Text(text = "END OF TRIP --> CLICK TO CALCULATE !")
+        }
+        if (showDialog) {
+            CalculationResultDialog(onDismiss = { showDialog = false })
+        }
+    }
 }
-
+@Composable
+fun CalculationResultDialog(onDismiss: ()-> Unit ) {
+    CustomDialog(
+        content = {
+            // Your composable content here
+            Column (
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                CustomText(
+                    "Pay Back Plan Calculated",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center // Align text to center horizontally
+                )
+                Box (
+                    Modifier
+                        .border(1.dp, Color.Black)
+                        .shadow(2.dp)
+                        .padding(dimensionResource(id = R.dimen.padding_medium))
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxWidth()
+                ) {
+                    Text(text = CalculatingManager.findPayoffSolution())
+                }
+            }
+        },
+        onDismiss = onDismiss,
+    )
+}
 @Preview(showBackground = true)
 @Composable
 fun TripBuddyMoneyCalculatorPreview() {
@@ -322,34 +347,4 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
             }
         }
     }
-}
-@Composable
-fun CalculationResultDialog(onDismiss: ()-> Unit ) {
-    CustomDialog(
-        content = {
-            // Your composable content here
-            Column (
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                CustomText(
-                    "Pay Back Plan Calculated",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center // Align text to center horizontally
-                )
-                Box (
-                    Modifier
-                        .border(1.dp, Color.Black)
-                        .shadow(2.dp)
-                        .padding(dimensionResource(id = R.dimen.padding_medium))
-                        .verticalScroll(rememberScrollState())
-                        .fillMaxWidth()
-                ) {
-                    Text(text = CalculatingManager.findPayoffSolution())
-                }
-            }
-        },
-        onDismiss = onDismiss,
-    )
 }
