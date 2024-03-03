@@ -35,6 +35,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -218,9 +219,12 @@ fun HorizontalSrollingView(item: Item) {
         items(oweByList) { oweBy ->
             FilledTonalButton (
                 onClick = { /*TODO*/ },
-                shape = MaterialTheme.shapes.medium,
+                shape = MaterialTheme.shapes.small,
             ) {
-                Text(text = oweBy)
+                Text(
+                    text = oweBy,
+                    style = MaterialTheme.typography.displaySmall,
+                )
             }
         }
     }
@@ -276,25 +280,6 @@ fun CalculationResultDialog(onDismiss: ()-> Unit ) {
         onDismiss = onDismiss,
     )
 }
-@Preview(showBackground = true)
-@Composable
-fun TripBuddyMoneyCalculatorPreview() {
-    TripBuddyMoneyCalculatorTheme {
-
-        // Reset ItemManager and PersonManager before adding a new item
-        ItemManager.items.clear()
-        PersonManager.people.clear()
-        PersonManager.addPerson("Jack")
-        PersonManager.addPerson("Moon")
-        PersonManager.addPerson("Hui")
-        PersonManager.addPerson("Anna")
-        // Add a new item to ItemManager
-        ItemManager.addOwingItem("Oyster", 20.0, PersonManager.getPersonByName("Jack"), PersonManager.people)
-        //TripBuddyMoneyCalculatorApp()
-        CalculationResultDialog(onDismiss = {null})
-    }
-}
-
 @Composable
 fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
     Dialog (
@@ -336,6 +321,29 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
                     )
                 }
             }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TripBuddyMoneyCalculatorPreview() {
+    TripBuddyMoneyCalculatorTheme {
+        Surface (
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            // Reset ItemManager and PersonManager before adding a new item
+            ItemManager.items.clear()
+            PersonManager.people.clear()
+            PersonManager.addPerson("Jack")
+            PersonManager.addPerson("Moon")
+            PersonManager.addPerson("Hui")
+            PersonManager.addPerson("Anna")
+            // Add a new item to ItemManager
+            ItemManager.addOwingItem("Oyster", 20.0, PersonManager.getPersonByName("Jack"), PersonManager.people)
+            //TripBuddyMoneyCalculatorApp()
+            CalculationResultDialog(onDismiss = {null})
         }
     }
 }
