@@ -22,6 +22,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -43,7 +44,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.modifier.modifierLocalConsumer
 import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -97,7 +101,7 @@ private fun TripBuddyMoneyCalculatorApp() {
 }
 @Composable
 fun TitleDisplay(modifier: Modifier = Modifier) {
-    CustomText(
+    Text(
         text = "Welcome To Trip Buddy Money Calculator"
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
@@ -107,12 +111,17 @@ fun CurrentTripTitle() {
     Column (
         horizontalAlignment = Alignment.CenterHorizontally,
     ){
-        CustomText(
+        Text(
             text = "Current Trip: Waipu Trip",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold
+            style = MaterialTheme.typography.displayLarge
         )
-        CustomText(text = "Click here to change to other trips", underline = true, color = Color.Blue, onClick = { /*TO DO*/})
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+        Text(
+            text = "Click here to change to other trips",
+            textDecoration = TextDecoration.Underline,
+            color = Color.Blue,
+            modifier = Modifier.clickable { /* Handle click event here */ },
+        )
     }
 }
 @Composable
@@ -154,7 +163,10 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
                     .weight(0.2f)
                     .padding(dimensionResource(R.dimen.padding_small))
             ) {
-                CustomText(text = item.name)
+                Text(
+                    text = item.name,
+                    style = MaterialTheme.typography.displaySmall,
+                )
             }
             Box (
                 modifier = Modifier
@@ -162,8 +174,10 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
                     .padding(dimensionResource(R.dimen.padding_small))
             ) {
                 Column {
-                    CustomText(text = "Price :\n" + item.price)
-                    CustomText(text = "Paid by:\n" + item.paidBy.name)
+                    Text(text = "Price :",style = MaterialTheme.typography.displaySmall)
+                    Text(text = "${item.price}")
+                    Text(text = "Paid by:",style = MaterialTheme.typography.displaySmall)
+                    Text(text = "${item.paidBy.name}")
                 }
             }
             Box (
@@ -173,7 +187,7 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
             ) {
                 Column {
                     Row {
-                        CustomText(text = "Owed by: ")
+                        Text(text = "Owed by: ", style = MaterialTheme.typography.displaySmall)
                         FloatingActionButton(
                             onClick = { /*TODO*/ },
                             modifier = Modifier
@@ -206,7 +220,7 @@ fun HorizontalSrollingView(item: Item) {
                 onClick = { /*TODO*/ },
                 shape = MaterialTheme.shapes.medium,
             ) {
-                CustomText(text = oweBy)
+                Text(text = oweBy)
             }
         }
     }
@@ -222,7 +236,10 @@ fun ReadyToCalculateButton() {
         Button(
             onClick = { showDialog = true },
         ) {
-            Text(text = "END OF TRIP --> CLICK TO CALCULATE !")
+            Text(
+                text = "END OF TRIP --> CLICK TO CALCULATE !",
+                style = MaterialTheme.typography.displayMedium
+            )
         }
         if (showDialog) {
             CalculationResultDialog(onDismiss = { showDialog = false })
@@ -238,7 +255,7 @@ fun CalculationResultDialog(onDismiss: ()-> Unit ) {
                 horizontalAlignment = Alignment.CenterHorizontally,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                CustomText(
+                Text(
                     "Pay Back Plan Calculated",
                     fontSize = 20.sp,
                     fontWeight = FontWeight.Bold,
@@ -279,35 +296,6 @@ fun TripBuddyMoneyCalculatorPreview() {
 }
 
 @Composable
-fun CustomText(
-    text: String,
-    fontSize: TextUnit = 10.sp,
-    color: Color = Color.Black,
-    fontWeight: FontWeight? = null,
-    fontStyle: FontStyle? = null,
-    underline: Boolean = false, // Added underline parameter
-    textAlign: TextAlign? = null,
-    onClick: (() -> Unit)? = null,
-    modifier: Modifier = Modifier,
-) {
-    val textDecoration = if (underline) TextDecoration.Underline else TextDecoration.None
-
-    Text(
-
-        text = text,
-        fontSize = fontSize,
-        color = color,
-        fontWeight = fontWeight,
-        lineHeight = 12.sp,
-        fontStyle = fontStyle,
-        textDecoration = textDecoration,
-        textAlign = textAlign,
-        modifier = if (onClick != null) Modifier.clickable { onClick() } else Modifier
-    )
-    Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_small)))
-}
-
-@Composable
 fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
     Dialog (
         onDismissRequest = onDismiss,
@@ -342,7 +330,10 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
                         .align(Alignment.CenterHorizontally)
                         .padding(8.dp)
                 ) {
-                    Text("Close")
+                    Text(
+                        "Close",
+                        style = MaterialTheme.typography.displayMedium
+                    )
                 }
             }
         }
