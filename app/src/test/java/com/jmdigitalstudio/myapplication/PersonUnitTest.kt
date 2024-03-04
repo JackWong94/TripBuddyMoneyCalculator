@@ -1,5 +1,7 @@
 package com.jmdigitalstudio.myapplication
 
+import com.jmdigitalstudio.myapplication.data.Person
+import com.jmdigitalstudio.myapplication.data.PersonManager
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

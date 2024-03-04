@@ -2,6 +2,9 @@ package com.jmdigitalstudio.myapplication
 
 import android.util.Log
 import com.jmdigitalstudio.myapplication.Utils.roundTo2Decimal
+import com.jmdigitalstudio.myapplication.data.ItemManager
+import com.jmdigitalstudio.myapplication.data.Person
+import com.jmdigitalstudio.myapplication.data.PersonManager
 
 object CalculatingManager {
     /*
@@ -86,7 +89,7 @@ object CalculatingManager {
         }
         Log.d("JACK", itemOweDetails.joinToString("\n"))
         Log.d("JACK", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n")
-        val personOweTotal = PersonManager.people.map {person ->
+        val personOweTotal = PersonManager.people.map { person ->
             "${person.name} \t total paid = ${person.paidTotal} \t total owing = ${person.owedTotal} \t paidOweDiff = ${person.owedAndPaidDifference}"
         }
         Log.d("JACK", personOweTotal.joinToString("\n"))

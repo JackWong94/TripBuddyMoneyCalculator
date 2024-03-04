@@ -1,4 +1,4 @@
-package com.jmdigitalstudio.myapplication
+package com.jmdigitalstudio.myapplication.data
 
 import android.util.Log
 import androidx.room.Entity

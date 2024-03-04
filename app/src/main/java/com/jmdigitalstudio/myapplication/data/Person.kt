@@ -1,4 +1,4 @@
-package com.jmdigitalstudio.myapplication
+package com.jmdigitalstudio.myapplication.data
 
 import android.util.Log
 import androidx.room.Entity
@@ -37,12 +37,12 @@ object PersonManager {
         return people.find { it.name.equals(name, ignoreCase = true) }!!
     }
     fun printPersonInMostOweToMostPaidOrder() {
-        val mostOweToMostPaidOrder = PersonManager.people.sortedBy {it.owedAndPaidDifference }
+        val mostOweToMostPaidOrder = people.sortedBy {it.owedAndPaidDifference }
             .joinToString("\n") { "${it.name} ${it.owedAndPaidDifference}" }
         Log.d("JACK", mostOweToMostPaidOrder)
     }
     fun printPersonOwingStatus() {
-        val payStatus = PersonManager.people
+        val payStatus = people
             .groupBy {it.owedAndPaidDifference > 0 }
             .map { (toBePaids, people) ->
                 people.joinToString("\n") {
