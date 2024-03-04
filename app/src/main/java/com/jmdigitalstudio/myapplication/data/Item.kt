@@ -3,6 +3,8 @@ package com.jmdigitalstudio.myapplication.data
 import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverters
+import com.jmdigitalstudio.myapplication.DoubleListConverter
 
 @Entity(tableName = "items")
 data class Item (
@@ -10,11 +12,13 @@ data class Item (
     val id: Int = 0,
     val name: String,
     val price: Double,
+    @TypeConverters(PersonConverter::class)
     val paidBy: Person,
-    val owedBy: List<Person>,
-    val owedAmount: List<Double>
+    @TypeConverters(DoubleListConverter::class)
+    val owedAmount: List<Double>,
+    @TypeConverters(PersonListConverter::class)
+    val owedBy: List<Person>
 )
-
 object ItemManager {
 
     var items = mutableListOf<Item>()

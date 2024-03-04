@@ -3,6 +3,9 @@ package com.jmdigitalstudio.myapplication.data
 import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 @Entity(tableName = "people")
 data class Person(
@@ -52,5 +55,29 @@ object PersonManager {
             .joinToString("\n")
 
         Log.d("JACK", payStatus)
+    }
+}
+class PersonConverter {
+    @TypeConverter
+    fun fromString(value: String): Person {
+        return Gson().fromJson(value, Person::class.java)
+    }
+
+    @TypeConverter
+    fun fromPerson(person: Person): String {
+        return Gson().toJson(person)
+    }
+}
+
+class PersonListConverter {
+    @TypeConverter
+    fun fromString(value: String): List<Person> {
+        val type = object : TypeToken<List<Person>>() {}.type
+        return Gson().fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun fromList(list: List<Person>): String {
+        return Gson().toJson(list)
     }
 }
