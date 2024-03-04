@@ -60,7 +60,7 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     // Room dependency
-    val room_version = "2.6.1" // refer to this website to get latest stable version  https://developer.android.com/jetpack/androidx/versions
+    val room_version = "2.4.3" // refer to this website to get latest stable version  https://developer.android.com/jetpack/androidx/versions
     implementation("androidx.room:room-ktx:$room_version")
     // To use Kotlin annotation processing tool (kapt)
     ksp("androidx.room:room-compiler:$room_version")

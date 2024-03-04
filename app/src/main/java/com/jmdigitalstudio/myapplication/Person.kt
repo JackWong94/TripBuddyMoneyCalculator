@@ -29,7 +29,7 @@ object PersonManager {
             Log.d("JACK","PERSON ALREADY EXIST")
             return false
         } else {
-            people.add(Person(name, paidTotal, owedTotal))
+            people.add(Person(name = name, paidTotal = paidTotal, owedTotal = owedTotal))
             return true
         }
     }

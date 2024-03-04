@@ -29,7 +29,7 @@ object ItemManager {
             Log.d("JACK","ITEM ALREADY EXIST")
             return false
         } else {
-            items.add(Item(name, price, paidBy, owedBy, owedAmount))
+            items.add(Item(name = name, price = price, paidBy = paidBy, owedBy = owedBy, owedAmount = owedAmount))
             setPaidAmountToPerson(paidBy, price)
             setOweAmountToPerson(owedBy, owedAmount)
             return true
