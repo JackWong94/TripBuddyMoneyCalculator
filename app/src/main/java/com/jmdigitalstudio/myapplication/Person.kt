@@ -1,8 +1,13 @@
 package com.jmdigitalstudio.myapplication
 
 import android.util.Log
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "people")
 data class Person(
+    @PrimaryKey(autoGenerate = true)
+    val id: Int = 0,
     val name: String,
     var paidTotal: Double,
     var owedTotal: Double,
