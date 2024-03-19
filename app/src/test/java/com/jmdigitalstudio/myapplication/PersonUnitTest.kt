@@ -33,7 +33,7 @@ class PersonUnitTest {
         TestUtils.logTestCaseTitle()
         // Arrange
         val name = "TestPerson2"
-        val person = Person(name, 0.0, 0.0)
+        val person = Person(name = name, paidTotal = 0.0, owedTotal = 0.0)
         PersonManager.people.add(person)
 
         // Act
