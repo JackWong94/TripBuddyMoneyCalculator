@@ -19,13 +19,36 @@ object CalculatingManager {
     fun calculationSetup() {
         PersonManager.addPerson("Jack")
         PersonManager.addPerson("Moon")
-        PersonManager.addPerson("Daniel")
-        PersonManager.addPerson("Wang En")
-        PersonManager.addPerson("Kan")
+        //PersonManager.addPerson("Daniel")
+        //PersonManager.addPerson("Wang En")
+        //PersonManager.addPerson("Kan")
         PersonManager.addPerson("Hui")
-        PersonManager.addPerson("Anna")
+        //PersonManager.addPerson("Anna")
         PersonManager.addPerson("Mei")
+        ItemManager.addOwingItem(
+            "HUI",
+            27.96,
+            PersonManager.getPersonByName("Hui"),
+            listOf(
+                PersonManager.getPersonByName("Jack"),
+                PersonManager.getPersonByName("Moon"),
+                PersonManager.getPersonByName("Hui"),
+                PersonManager.getPersonByName("Mei")
+            )
+        )
+        ItemManager.addOwingItem(
+            "Moon",
+            12.79,
+            PersonManager.getPersonByName("Moon"),
+            listOf(
+                    PersonManager.getPersonByName("Jack"),
+                    PersonManager.getPersonByName("Moon"),
+                    PersonManager.getPersonByName("Hui"),
+                    PersonManager.getPersonByName("Mei")
+            )
+        )
 
+/*
         ItemManager.addOwingItem("oyster",
             20.0,
             PersonManager.getPersonByName("Jack"),
@@ -78,7 +101,10 @@ object CalculatingManager {
                 PersonManager.getPersonByName("Mei")
             )
         )
+ */
     }
+
+
     fun summary(): String {
         val itemOweDetails = ItemManager.items.map { item ->
             val owedDetails = item.owedBy.zip(item.owedAmount)

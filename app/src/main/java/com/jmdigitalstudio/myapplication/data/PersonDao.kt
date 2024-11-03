@@ -18,7 +18,6 @@ interface PersonDao {
     suspend fun delete(person: Person)
     @Query("SELECT * from people WHERE id = :id")
     fun getPerson(id: Int): Flow<Person>
-
     @Query("SELECT * from people ORDER BY name ASC")
     fun getAllPeople(): Flow<List<Person>>
 }

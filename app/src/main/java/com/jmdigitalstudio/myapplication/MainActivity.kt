@@ -1,3 +1,5 @@
+@file:Suppress("FunctionName")
+
 package com.jmdigitalstudio.myapplication
 
 import android.os.Bundle
@@ -74,6 +76,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 }
+
 @Composable
 private fun TripBuddyMoneyCalculatorApp() {
     Column (
@@ -96,8 +99,9 @@ private fun TripBuddyMoneyCalculatorApp() {
         }
     }
 }
+
 @Composable
-fun TitleDisplay(modifier: Modifier = Modifier) {
+fun TitleDisplay() {
     Text(
         text = "Welcome To Trip Buddy Money Calculator"
     )
@@ -174,7 +178,7 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
                     Text(text = "Price :",style = MaterialTheme.typography.displaySmall)
                     Text(text = "${item.price}")
                     Text(text = "Paid by:",style = MaterialTheme.typography.displaySmall)
-                    Text(text = "${item.paidBy.name}")
+                    Text(text = item.paidBy.name)
                 }
             }
             Box (
@@ -194,14 +198,14 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
                         }
                     }
                     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_extra_small)))
-                    HorizontalSrollingView(item = item)
+                    HorizontalScrollingView(item = item)
                 }
             }
         }
     }
 }
 @Composable
-fun HorizontalSrollingView(item: Item) {
+fun HorizontalScrollingView(item: Item) {
     LazyRow (
         modifier = Modifier
             .background(Color.White, shape = RoundedCornerShape(16.dp))
@@ -210,7 +214,7 @@ fun HorizontalSrollingView(item: Item) {
         horizontalArrangement = Arrangement.spacedBy(dimensionResource(R.dimen.padding_small)),
     ) {
         val oweByList = item.owedBy.zip(item.owedAmount) { person, amount ->
-            "${person.name} ${amount}"
+            "${person.name} $amount"
         }
         items(oweByList) { oweBy ->
             FilledTonalButton (
@@ -338,8 +342,20 @@ fun TripBuddyMoneyCalculatorPreview() {
             PersonManager.addPerson("Anna")
             // Add a new item to ItemManager
             ItemManager.addOwingItem("Oyster", 20.0, PersonManager.getPersonByName("Jack"), PersonManager.people)
-            //TripBuddyMoneyCalculatorApp()
-            CalculationResultDialog(onDismiss = {null})
+            TripBuddyMoneyCalculatorApp()
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CalculationResultDialogPreview() {
+    TripBuddyMoneyCalculatorTheme {
+        Surface (
+            modifier = Modifier.fillMaxSize(),
+            color = MaterialTheme.colorScheme.background
+        ) {
+            CalculationResultDialog(onDismiss = {})
         }
     }
 }
