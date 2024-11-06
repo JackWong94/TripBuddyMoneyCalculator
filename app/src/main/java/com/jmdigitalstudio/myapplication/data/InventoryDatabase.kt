@@ -4,8 +4,11 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.jmdigitalstudio.myapplication.DoubleListConverter
 
 @Database(entities = [Item::class, Person::class], version = 1, exportSchema = false)
+@TypeConverters(DoubleListConverter::class, PersonConverter::class, PersonListConverter::class)
 abstract class InventoryDatabase : RoomDatabase() {
 
     abstract fun itemDao(): ItemDao
@@ -20,7 +23,9 @@ abstract class InventoryDatabase : RoomDatabase() {
                     context.applicationContext,
                     InventoryDatabase::class.java,
                     "my_database"
-                ).build().also { instance = it }
+                )
+                    .fallbackToDestructiveMigration()
+                    .build().also { instance = it }
             }
         }
     }

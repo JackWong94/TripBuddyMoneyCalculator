@@ -25,6 +25,7 @@ object CalculatingManager {
         PersonManager.addPerson("Hui")
         //PersonManager.addPerson("Anna")
         PersonManager.addPerson("Mei")
+
         ItemManager.addOwingItem(
             "HUI",
             27.96,
@@ -48,7 +49,7 @@ object CalculatingManager {
             )
         )
 
-/*
+        /*
         ItemManager.addOwingItem("oyster",
             20.0,
             PersonManager.getPersonByName("Jack"),
@@ -100,8 +101,7 @@ object CalculatingManager {
                 PersonManager.getPersonByName("Anna"),
                 PersonManager.getPersonByName("Mei")
             )
-        )
- */
+        )*/
     }
 
 
