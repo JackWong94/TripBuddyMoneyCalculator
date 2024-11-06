@@ -50,7 +50,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.jmdigitalstudio.myapplication.CalculatingManager
 import com.jmdigitalstudio.myapplication.R
@@ -58,11 +57,16 @@ import com.jmdigitalstudio.myapplication.data.Item
 import com.jmdigitalstudio.myapplication.data.ItemManager
 import com.jmdigitalstudio.myapplication.data.PersonManager
 import com.jmdigitalstudio.myapplication.ui.theme.TripBuddyMoneyCalculatorTheme
-import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun TripBuddyMoneyCalculatorApp(appViewModel: AppViewModel = viewModel(factory = AppViewModel.factory)) {
     val items by appViewModel.items.collectAsState(initial = emptyList())
+    TripBuddyMoneyCalculatorApp(items)
+}
+
+@Composable
+fun TripBuddyMoneyCalculatorApp(items: List<Item>) {
+
     Column (
         modifier = Modifier
             .padding(dimensionResource(id = R.dimen.padding_medium)),
@@ -323,8 +327,7 @@ fun TripBuddyMoneyCalculatorPreview() {
         // Add a new item to ItemManager
         ItemManager.addOwingItem("Oyster", 20.0, PersonManager.getPersonByName("Jack"), PersonManager.people)
 
-        TripBuddyMoneyCalculatorApp()
-
+        TripBuddyMoneyCalculatorApp(ItemManager.items)
     }
 }
 
