@@ -3,7 +3,10 @@ package com.jmdigitalstudio.myapplication.data
 import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import androidx.room.TypeConverters
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.jmdigitalstudio.myapplication.DoubleListConverter
 
 @Entity(tableName = "items")
@@ -52,4 +55,28 @@ object ItemManager {
         paidBy.paidTotal += amount
     }
 
+}
+class ItemConverter {
+    @TypeConverter
+    fun fromString(value: String): Item {
+        return Gson().fromJson(value, Item::class.java)
+    }
+
+    @TypeConverter
+    fun fromItem(item: Item): String {
+        return Gson().toJson(item)
+    }
+}
+
+class ItemListConverter {
+    @TypeConverter
+    fun fromString(value: String): List<Item> {
+        val type = object : TypeToken<List<Item>>() {}.type
+        return Gson().fromJson(value, type)
+    }
+
+    @TypeConverter
+    fun fromList(list: List<Item>): String {
+        return Gson().toJson(list)
+    }
 }

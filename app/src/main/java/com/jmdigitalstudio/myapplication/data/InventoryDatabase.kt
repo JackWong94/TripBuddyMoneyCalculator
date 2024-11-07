@@ -7,10 +7,19 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.jmdigitalstudio.myapplication.DoubleListConverter
 
-@Database(entities = [Item::class, Person::class], version = 1, exportSchema = false)
-@TypeConverters(DoubleListConverter::class, PersonConverter::class, PersonListConverter::class)
+@Database(entities = [Trip::class, Item::class, Person::class], version = 1, exportSchema = false)
+@TypeConverters(
+    DoubleListConverter::class,
+    TripConverter::class,
+    TripListConverter::class,
+    ItemConverter::class,
+    ItemListConverter::class,
+    PersonConverter::class,
+    PersonListConverter::class
+)
 abstract class InventoryDatabase : RoomDatabase() {
 
+    abstract fun tripDao(): TripDao
     abstract fun itemDao(): ItemDao
     abstract fun personDao(): PersonDao
     companion object {

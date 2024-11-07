@@ -12,6 +12,7 @@ class AppDataContainer(private val context: Context) : AppContainer {
     // Provide a single instance of Repository, initialized lazily
     override val repository: Repository by lazy {
         OfflineRepository(
+            database.tripDao(),
             database.itemDao(),
             database.personDao()
         )

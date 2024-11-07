@@ -6,6 +6,12 @@ import kotlinx.coroutines.flow.Flow
  * Repository that provides insert, update, delete, and retrieve of [Item] from a given data source.
  */
 interface Repository {
+    //Trip related
+    fun getAllTripsStream(): Flow<List<Trip>>
+    fun getTripStream(id: Int): Flow<Trip?>
+    suspend fun insertTrip(trip: Trip)
+    suspend fun deleteTrip(trip: Trip)
+    suspend fun updateTrip(trip: Trip)
 
     //Items related
     fun getAllItemsStream(): Flow<List<Item>>

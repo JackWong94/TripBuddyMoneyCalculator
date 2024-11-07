@@ -10,12 +10,33 @@ import com.jmdigitalstudio.myapplication.MyApplication
 import com.jmdigitalstudio.myapplication.data.Item
 import com.jmdigitalstudio.myapplication.data.Person
 import com.jmdigitalstudio.myapplication.data.Repository
+import com.jmdigitalstudio.myapplication.data.Trip
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class AppViewModel(private val repository: Repository) : ViewModel() {
+    // LiveData or StateFlow to hold the list of items
+    private val _trips = MutableStateFlow<List<Trip>>(emptyList())
+    val trips: StateFlow<List<Trip>> = _trips.asStateFlow()
+
+    // Function to add an item
+    fun addTrip(trip: Trip) {
+        viewModelScope.launch {
+            repository.insertTrip(trip) // Call the repository method to insert an item
+            loadTrips() // Reload items after insertion
+        }
+    }
+    fun loadTrips() {
+        viewModelScope.launch {
+            // Fetch items from the repository (this could be a flow or a suspend function)
+            repository.getAllTripsStream().collect { tripList ->
+                _trips.value = tripList // Set the collected item list to the MutableStateFlow
+            }
+        }
+    }
+
     // LiveData or StateFlow to hold the list of items
     private val _items = MutableStateFlow<List<Item>>(emptyList())
     val items: StateFlow<List<Item>> = _items.asStateFlow()

@@ -1,6 +1,5 @@
 package com.jmdigitalstudio.myapplication.ui
 
-import android.app.people.PeopleManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -32,7 +31,6 @@ import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -61,16 +59,58 @@ import com.jmdigitalstudio.myapplication.R
 import com.jmdigitalstudio.myapplication.data.Item
 import com.jmdigitalstudio.myapplication.data.ItemManager
 import com.jmdigitalstudio.myapplication.data.PersonManager
+import com.jmdigitalstudio.myapplication.data.Trip
 import com.jmdigitalstudio.myapplication.ui.theme.TripBuddyMoneyCalculatorTheme
 
 @Composable
 fun TripBuddyMoneyCalculatorApp(appViewModel: AppViewModel = viewModel(factory = AppViewModel.factory)) {
-    val items by appViewModel.items.collectAsState(initial = emptyList())
-    TripBuddyMoneyCalculatorApp(items, onClickAddItem = { /* TO TO*/ })
+    val trip by appViewModel.trips.collectAsState(initial = emptyList())
+    TripBuddyMoneyCalculatorApp(trip)
+}
+@Composable
+fun TripBuddyMoneyCalculatorApp(trip: List<Trip>) {
+    var showAddTripDialog by remember { mutableStateOf(false) }
+    Column (
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(dimensionResource(id = R.dimen.padding_medium)),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Top
+    ){
+        TitleDisplay()
+        Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+        if (showAddTripDialog) {
+            AddItemsAndPeopleDialog(onDismiss = { showAddTripDialog = false })
+        }
+        LazyColumn (modifier = Modifier.fillMaxWidth()){
+            items(trip) { tripItem -> // Use 'items' instead of 'forEach'
+                Button(
+                    onClick = { /* Handle click for this trip */ },
+                    modifier = Modifier
+                        .fillMaxWidth()   // Make button full width or set custom width
+                        .padding(8.dp)    // Padding around each button
+                ) {
+                    Text(text = tripItem.name) // Assuming each trip has a 'name' property
+                }
+            }
+        }
+        FloatingActionButton(
+            onClick = {showAddTripDialog = true},
+            Modifier.size(30.dp)
+        ) {
+            Icon(Icons.Filled.Add, null )
+        }
+    }
 }
 
 @Composable
-fun TripBuddyMoneyCalculatorApp(items: List<Item>, onClickAddItem: () -> Unit) {
+fun CurrentTripScreen(appViewModel: AppViewModel = viewModel(factory = AppViewModel.factory)) {
+    val items by appViewModel.items.collectAsState(initial = emptyList())
+    CurrentTripScreen(items, onClickAddItem = { /* TO TO*/ })
+}
+
+@Composable
+fun CurrentTripScreen(items: List<Item>, onClickAddItem: () -> Unit) {
 
     Column (
         modifier = Modifier
@@ -78,9 +118,6 @@ fun TripBuddyMoneyCalculatorApp(items: List<Item>, onClickAddItem: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        Box(modifier = Modifier.weight(0.5f)) {
-            TitleDisplay()
-        }
         Box(modifier = Modifier.weight(1f)) {
             CurrentTripTitle()
         }
@@ -96,7 +133,9 @@ fun TripBuddyMoneyCalculatorApp(items: List<Item>, onClickAddItem: () -> Unit) {
 @Composable
 fun TitleDisplay() {
     Text(
-        text = "Welcome To Trip Buddy Money Calculator"
+        text = "Welcome To Trip Buddy\n Money Calculator",
+        style = MaterialTheme.typography.displayLarge,
+        textAlign = TextAlign.Center
     )
     Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
 }
@@ -366,7 +405,7 @@ fun AddItemsAndPeopleDialog(onDismiss: ()-> Unit ) {
 }
 
 @Composable
-fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
+fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit) {
     Dialog (
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -412,7 +451,15 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
 
 @Preview(showBackground = true)
 @Composable
-fun TripBuddyMoneyCalculatorPreview() {
+fun TripBuddyMoneyCalculatorAppPreview() {
+    TripBuddyMoneyCalculatorTheme {
+        TripBuddyMoneyCalculatorApp(emptyList<Trip>())
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CurrentTripScreenPreview() {
     TripBuddyMoneyCalculatorTheme {
         // Reset ItemManager and PersonManager before adding a new item
         ItemManager.items.clear()
@@ -424,7 +471,7 @@ fun TripBuddyMoneyCalculatorPreview() {
         // Add a new item to ItemManager
         ItemManager.addOwingItem("Oyster", 20.0, PersonManager.getPersonByName("Jack"), PersonManager.people)
 
-        TripBuddyMoneyCalculatorApp(ItemManager.items, onClickAddItem = {})
+        CurrentTripScreen(ItemManager.items, onClickAddItem = {})
     }
 }
 
