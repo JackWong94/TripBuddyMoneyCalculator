@@ -1,8 +1,10 @@
 package com.jmdigitalstudio.myapplication.ui
 
+import android.app.people.PeopleManager
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -25,12 +27,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -61,11 +66,11 @@ import com.jmdigitalstudio.myapplication.ui.theme.TripBuddyMoneyCalculatorTheme
 @Composable
 fun TripBuddyMoneyCalculatorApp(appViewModel: AppViewModel = viewModel(factory = AppViewModel.factory)) {
     val items by appViewModel.items.collectAsState(initial = emptyList())
-    TripBuddyMoneyCalculatorApp(items)
+    TripBuddyMoneyCalculatorApp(items, onClickAddItem = { /* TO TO*/ })
 }
 
 @Composable
-fun TripBuddyMoneyCalculatorApp(items: List<Item>) {
+fun TripBuddyMoneyCalculatorApp(items: List<Item>, onClickAddItem: () -> Unit) {
 
     Column (
         modifier = Modifier
@@ -80,7 +85,7 @@ fun TripBuddyMoneyCalculatorApp(items: List<Item>) {
             CurrentTripTitle()
         }
         Box(modifier = Modifier.weight(5f)) {
-            ItemDetailsList(items)
+            ItemDetailsList(items, onClickAddItem )
         }
         Box(modifier = Modifier.weight(1f)) {
             ReadyToCalculateButton()
@@ -114,7 +119,8 @@ fun CurrentTripTitle() {
     }
 }
 @Composable
-fun ItemDetailsList(itemList: List<Item>) {
+fun ItemDetailsList(itemList: List<Item>, onClickAddItem: () -> Unit) {
+    var showAddItemAndOwingPeopleDialog by remember { mutableStateOf(false) }
     Column (
         modifier = Modifier, // Add padding to the whole Column
         verticalArrangement = Arrangement.Top,
@@ -129,10 +135,13 @@ fun ItemDetailsList(itemList: List<Item>) {
         }
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
         FloatingActionButton(
-            onClick = { /*TODO*/ },
+            onClick = { showAddItemAndOwingPeopleDialog = true },
             Modifier.size(30.dp)
         ) {
             Icon(Icons.Filled.Add, null )
+        }
+        if (showAddItemAndOwingPeopleDialog) {
+            AddItemsAndPeopleDialog(onDismiss = { showAddItemAndOwingPeopleDialog = false })
         }
     }
 }
@@ -144,7 +153,7 @@ fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
         elevation =  CardDefaults.cardElevation(
             defaultElevation = 2.dp
         ),
-        shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 30.dp, topEnd = 30.dp, bottomEnd = 10.dp)
+        shape = RoundedCornerShape(topStart = 10.dp, bottomStart = 10.dp, topEnd = 10.dp, bottomEnd = 10.dp)
     ) {
         Row {
             Box(
@@ -220,6 +229,7 @@ fun HorizontalScrollingView(item: Item) {
 @Composable
 fun ReadyToCalculateButton() {
     var showDialog by remember { mutableStateOf(false) }
+
     Column(
         verticalArrangement = Arrangement.Bottom,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -253,6 +263,7 @@ fun CalculationResultDialog(onDismiss: ()-> Unit ) {
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center // Align text to center horizontally
                 )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
                 Box (
                     Modifier
                         .border(1.dp, Color.Black)
@@ -268,6 +279,92 @@ fun CalculationResultDialog(onDismiss: ()-> Unit ) {
         onDismiss = onDismiss,
     )
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddItemsAndPeopleDialog(onDismiss: ()-> Unit ) {
+    var item by remember { mutableStateOf("") }
+    var price by remember { mutableStateOf("") }
+    var people = PersonManager.people
+    CustomDialog(
+        content = {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    "Add Items & Owing People",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center // Align text to center horizontally
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+                TextField(
+                    value = item,
+                    onValueChange = { item = it },
+                    label = { Text("Item name",fontSize = 15.sp) },
+                    placeholder = { Text("Enter item name",fontSize = 15.sp) }
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+                TextField(
+                    value = price,
+                    onValueChange = { price = it },
+                    label = { Text("Item price",fontSize = 15.sp) },
+                    placeholder = { Text("Enter item price",fontSize = 15.sp) }
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+                Text(
+                    "Paid By",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center // Align text to center horizontally
+                )
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(16.dp)
+                ) {
+                    people.forEach { person ->
+                        Row {
+                            Button(
+                                onClick = { /* Handle button click for this person */ },
+                                modifier = Modifier.size(100.dp, 40.dp)
+                            ) {
+                                Text(text = person.name) // Display person's name on the button
+                            }
+                        }
+                    }
+                }
+                Text(
+                    "Owe By",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    textAlign = TextAlign.Center // Align text to center horizontally
+                )
+                Row(
+                    modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(16.dp)
+                ) {
+                    people.forEach { person ->
+                        Row {
+                            Button(
+                                onClick = { /* Handle button click for this person */ },
+                                modifier = Modifier.size(100.dp, 40.dp)
+                            ) {
+                                Text(text = person.name) // Display person's name on the button
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        onDismiss = onDismiss,
+    )
+}
+
 @Composable
 fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit ) {
     Dialog (
@@ -327,7 +424,7 @@ fun TripBuddyMoneyCalculatorPreview() {
         // Add a new item to ItemManager
         ItemManager.addOwingItem("Oyster", 20.0, PersonManager.getPersonByName("Jack"), PersonManager.people)
 
-        TripBuddyMoneyCalculatorApp(ItemManager.items)
+        TripBuddyMoneyCalculatorApp(ItemManager.items, onClickAddItem = {})
     }
 }
 
@@ -338,3 +435,13 @@ fun CalculationResultDialogPreview() {
         CalculationResultDialog(onDismiss = {})
     }
 }
+
+@Preview(showBackground = true)
+@Composable
+fun AddItemsAndPeopleDialogPreview() {
+    TripBuddyMoneyCalculatorTheme {
+        AddItemsAndPeopleDialog(onDismiss = {})
+    }
+}
+
+
