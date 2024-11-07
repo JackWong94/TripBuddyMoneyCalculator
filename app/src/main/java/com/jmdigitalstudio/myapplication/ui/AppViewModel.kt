@@ -8,7 +8,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.jmdigitalstudio.myapplication.MyApplication
 import com.jmdigitalstudio.myapplication.data.Item
-import com.jmdigitalstudio.myapplication.data.Person
 import com.jmdigitalstudio.myapplication.data.Repository
 import com.jmdigitalstudio.myapplication.data.Trip
 import kotlinx.coroutines.flow.MutableStateFlow

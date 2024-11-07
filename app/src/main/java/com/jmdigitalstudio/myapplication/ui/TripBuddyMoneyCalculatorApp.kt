@@ -1,5 +1,6 @@
 package com.jmdigitalstudio.myapplication.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -69,6 +70,10 @@ import com.jmdigitalstudio.myapplication.ui.theme.TripBuddyMoneyCalculatorTheme
 @Composable
 fun TripBuddyMoneyCalculatorApp(appViewModel: AppViewModel = viewModel(factory = AppViewModel.factory)) {
     val trip by appViewModel.trips.collectAsState(initial = emptyList())
+    Log.d("JACK", "I AM HERE  " )
+    trip.forEach() {trip->
+        Log.d("JACK", "Trips  " + trip.name)
+    }
     TripBuddyMoneyCalculatorApp(trip)
 }
 @Composable
@@ -84,7 +89,7 @@ fun TripBuddyMoneyCalculatorApp(trip: List<Trip>) {
         TitleDisplay(title = "Welcome To Trip Buddy\n Money Calculator")
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
         if (showAddTripDialog) {
-            AddTripDialog(onDismiss = { showAddTripDialog = false }, onOk = {/*To Do*/})
+            AddTripDialog(onDismiss = { showAddTripDialog = false }, appViewModel = viewModel(factory = AppViewModel.factory))
         }
         LazyColumn (modifier = Modifier.fillMaxWidth()){
             items(trip) { tripItem -> // Use 'items' instead of 'forEach'
@@ -184,17 +189,18 @@ fun ItemDetailsList(itemList: List<Item>, onClickAddItem: () -> Unit) {
             Icon(Icons.Filled.Add, null )
         }
         if (showAddItemAndOwingPeopleDialog) {
-            AddTripDialog(onDismiss = { showAddItemAndOwingPeopleDialog = false }, onOk = {/*To Do*/})
+            AddItemsAndPeopleDialog(onDismiss = { showAddItemAndOwingPeopleDialog = false })
         }
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddTripDialog(onDismiss: () -> Unit, onOk: (() -> Unit)?, onOkString: String = "Ok") {
+fun AddTripDialog(onDismiss: () -> Unit, onOkString: String = "Ok", appViewModel: AppViewModel ?= null) {
     var tripName by remember { mutableStateOf("") }
     var numberOfPeople by remember { mutableStateOf(1) }
     val peopleNames = remember { mutableStateListOf<String>() }
+    var onOk: (() -> Unit) ?= null
     LaunchedEffect(numberOfPeople) {
         // Update the list size when the number of people changes
         while (peopleNames.size < numberOfPeople) {
@@ -204,7 +210,11 @@ fun AddTripDialog(onDismiss: () -> Unit, onOk: (() -> Unit)?, onOkString: String
             peopleNames.removeLast()
         }
     }
-
+    if (appViewModel != null) {
+        onOk = { appViewModel.addTrip(Trip(name = tripName))}
+    } else {
+        onOk = {}
+    }
     CustomDialog(
         onDismiss = onDismiss,
         onDismissString = "Cancel",
@@ -533,7 +543,10 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit, onDismis
                     Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
                     if (onOk != null) {
                         Button(
-                            onClick = onOk,
+                            onClick = {
+                                onOk?.invoke()  // Safely call onOk if it's not null
+                                onDismiss()
+                            },
                             modifier = Modifier
                                 .width(buttonWidth)
                         ) {
@@ -553,14 +566,14 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit, onDismis
 @Composable
 fun TripBuddyMoneyCalculatorAppPreview() {
     TripBuddyMoneyCalculatorTheme {
-        TripBuddyMoneyCalculatorApp(emptyList<Trip>())
+        TripBuddyMoneyCalculatorApp()
     }
 }
 @Preview(showBackground = true)
 @Composable
 fun AddTripDialogPreview() {
     TripBuddyMoneyCalculatorTheme {
-        AddTripDialog(onDismiss = {}, onOk = {})
+        AddTripDialog(onDismiss = {})
     }
 }
 
