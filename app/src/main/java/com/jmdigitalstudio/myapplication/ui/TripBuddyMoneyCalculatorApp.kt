@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -35,8 +36,10 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -54,6 +57,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.room.util.getColumnIndex
 import com.jmdigitalstudio.myapplication.CalculatingManager
 import com.jmdigitalstudio.myapplication.R
 import com.jmdigitalstudio.myapplication.data.Item
@@ -77,10 +81,10 @@ fun TripBuddyMoneyCalculatorApp(trip: List<Trip>) {
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top
     ){
-        TitleDisplay()
+        TitleDisplay(title = "Welcome To Trip Buddy\n Money Calculator")
         Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
         if (showAddTripDialog) {
-            AddItemsAndPeopleDialog(onDismiss = { showAddTripDialog = false })
+            AddTripDialog(onDismiss = { showAddTripDialog = false }, onOk = {/*To Do*/})
         }
         LazyColumn (modifier = Modifier.fillMaxWidth()){
             items(trip) { tripItem -> // Use 'items' instead of 'forEach'
@@ -131,9 +135,9 @@ fun CurrentTripScreen(items: List<Item>, onClickAddItem: () -> Unit) {
 }
 
 @Composable
-fun TitleDisplay() {
+fun TitleDisplay(title: String) {
     Text(
-        text = "Welcome To Trip Buddy\n Money Calculator",
+        text = title,
         style = MaterialTheme.typography.displayLarge,
         textAlign = TextAlign.Center
     )
@@ -180,10 +184,88 @@ fun ItemDetailsList(itemList: List<Item>, onClickAddItem: () -> Unit) {
             Icon(Icons.Filled.Add, null )
         }
         if (showAddItemAndOwingPeopleDialog) {
-            AddItemsAndPeopleDialog(onDismiss = { showAddItemAndOwingPeopleDialog = false })
+            AddTripDialog(onDismiss = { showAddItemAndOwingPeopleDialog = false }, onOk = {/*To Do*/})
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddTripDialog(onDismiss: () -> Unit, onOk: (() -> Unit)?, onOkString: String = "Ok") {
+    var tripName by remember { mutableStateOf("") }
+    var numberOfPeople by remember { mutableStateOf(1) }
+    val peopleNames = remember { mutableStateListOf<String>() }
+    LaunchedEffect(numberOfPeople) {
+        // Update the list size when the number of people changes
+        while (peopleNames.size < numberOfPeople) {
+            peopleNames.add("")
+        }
+        while (peopleNames.size > numberOfPeople) {
+            peopleNames.removeLast()
+        }
+    }
+
+    CustomDialog(
+        onDismiss = onDismiss,
+        onDismissString = "Cancel",
+        onOk = onOk,
+        onOkString = onOkString,
+        content = {
+            Column {
+                TitleDisplay(title = "Trip Information")
+                TextField(
+                    value = tripName,
+                    onValueChange = {tripName = it},
+                    label = { Text("Trip Name",fontSize = 15.sp) },
+                    placeholder = { Text("Enter trip name",fontSize = 15.sp) }
+                )
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    TextField(
+                        value = numberOfPeople.toString(),
+                        onValueChange = {
+                            val newValue = it.toIntOrNull() ?: 1
+                            numberOfPeople = newValue.coerceAtLeast(1) // Ensure at least 1 person
+                        },
+                        label = { Text("Number of People") },
+                        modifier = Modifier.width(100.dp)
+                    )
+                    Spacer(modifier = Modifier.width(16.dp))
+                    Column {
+                        Button(onClick = { numberOfPeople++ }) {
+                            Text("+")
+                        }
+                        Button(onClick = { if (numberOfPeople > 1) numberOfPeople-- }) {
+                            Text("-")
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(dimensionResource(id = R.dimen.padding_medium)))
+
+                // Scrollable list of TextFields for people names
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize()
+                ) {
+                    items(numberOfPeople) { index ->
+                        TextField(
+                            value = peopleNames.getOrElse(index) { "" },
+                            onValueChange = { newName -> peopleNames[index] = newName },
+                            label = { Text("Person ${index + 1}") },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                        )
+                    }
+                }
+            }
+        }
+    )
+}
+
 @Composable
 fun ItemDetailsCard(item: Item, modifier: Modifier = Modifier) {
     Card (
@@ -405,7 +487,8 @@ fun AddItemsAndPeopleDialog(onDismiss: ()-> Unit ) {
 }
 
 @Composable
-fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit) {
+fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit, onDismissString: String = "Close", onOk: (()->Unit) ?= null, onOkString: String = "OK") {
+    val buttonWidth = 120.dp
     Dialog (
         onDismissRequest = onDismiss,
         properties = DialogProperties(
@@ -433,16 +516,33 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit) {
                 ) {
                     content()
                 }
-                Button(
-                    onClick = onDismiss,
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .padding(8.dp)
-                ) {
-                    Text(
-                        "Close",
-                        style = MaterialTheme.typography.displayMedium
-                    )
+                Row (
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.fillMaxWidth()
+                ){
+                    Button(
+                        onClick = onDismiss,
+                        modifier = Modifier
+                            .width(buttonWidth)
+                    ) {
+                        Text(
+                            onDismissString,
+                            style = MaterialTheme.typography.displayMedium
+                        )
+                    }
+                    Spacer(modifier = Modifier.width(dimensionResource(id = R.dimen.padding_medium)))
+                    if (onOk != null) {
+                        Button(
+                            onClick = onOk,
+                            modifier = Modifier
+                                .width(buttonWidth)
+                        ) {
+                            Text(
+                                onOkString,
+                                style = MaterialTheme.typography.displayMedium
+                            )
+                        }
+                    }
                 }
             }
         }
@@ -454,6 +554,13 @@ fun CustomDialog(content: @Composable () -> Unit, onDismiss: ()-> Unit) {
 fun TripBuddyMoneyCalculatorAppPreview() {
     TripBuddyMoneyCalculatorTheme {
         TripBuddyMoneyCalculatorApp(emptyList<Trip>())
+    }
+}
+@Preview(showBackground = true)
+@Composable
+fun AddTripDialogPreview() {
+    TripBuddyMoneyCalculatorTheme {
+        AddTripDialog(onDismiss = {}, onOk = {})
     }
 }
 
